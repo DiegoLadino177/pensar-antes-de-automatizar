@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pensar antes de Automatizar | IA y Sociedad</title>
+  <meta name="description" content="Pensar antes de Automatizar: página educativa e interactiva sobre inteligencia artificial y sociedad, con un detector de uso responsable y un simulador de decisiones éticas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --bg-card: #121826;
+      --bg-elevated: #1a2234;
+      --border: rgba(139, 92, 246, 0.2);
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --purple: #8b5cf6;
+      --purple-light: #a78bfa;
+      --pink: #ec4899;
+      --cyan: #22d3ee;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --gradient: linear-gradient(135deg, #8b5cf6, #ec4899);
+      --gradient-soft: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(236,72,153,0.1));
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 20%, rgba(139,92,246,0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(236,72,153,0.08), transparent),
+        radial-gradient(ellipse 50% 30% at 50% 90%, rgba(34,211,238,0.06), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(11,15,26,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--gradient);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(139,92,246,0.15);
+    }
+
+    .nav-chat-btn {
+      background: var(--gradient);
+      color: white !important;
+      padding: 0.45rem 1rem !important;
+      border-radius: 999px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .nav-chat-btn:hover {
+      opacity: 0.9;
+      transform: scale(1.03);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7rem 1.5rem 4rem;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .hero-content { max-width: 820px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--gradient-soft);
+      border: 1px solid var(--border);
+      color: var(--purple-light);
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 7vw, 4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 span {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 2rem;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.6rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+      box-shadow: 0 4px 20px rgba(139,92,246,0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(139,92,246,0.5);
+    }
+
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(139,92,246,0.15);
+      border-color: var(--purple);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 5rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .def-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .def-grid { grid-template-columns: 1fr; }
+    }
+
+    .def-text h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: var(--purple-light);
+    }
+
+    .def-text p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .cap-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .cap-tag {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .def-visual {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .def-visual::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(139,92,246,0.08), transparent 60%);
+    }
+
+    .code-block {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      position: relative;
+    }
+
+    .code-block .keyword { color: var(--pink); }
+    .code-block .string { color: var(--green); }
+    .code-block .comment { color: #64748b; }
+    .code-block .func { color: var(--cyan); }
+
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .impact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      transition: all 0.25s;
+    }
+
+    .impact-card:hover {
+      border-color: rgba(139,92,246,0.5);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .impact-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .impact-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+    .impact-card p { color: var(--text-muted); font-size: 0.95rem; }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 700px) {
+      .split-grid { grid-template-columns: 1fr; }
+    }
+
+    .split-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+    }
+
+    .split-box h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .split-box.good h3 { color: var(--green); }
+    .split-box.bad h3 { color: var(--red); }
+
+    .split-box ul { list-style: none; }
+
+    .split-box li {
+      padding: 0.6rem 0;
+      padding-left: 1.6rem;
+      position: relative;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.95rem;
+    }
+
+    .split-box li:last-child { border-bottom: none; }
+
+    .split-box.good li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .split-box.bad li::before {
+      content: '!';
+      position: absolute;
+      left: 0;
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .empleo-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .empleo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .empleo-card .num {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+    }
+
+    .empleo-card h4 { font-size: 1rem; margin-bottom: 0.4rem; }
+    .empleo-card p { color: var(--text-muted); font-size: 0.9rem; }
+
+    .note-box {
+      background: var(--gradient-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    .ethics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .ethic-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .ethic-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-3px);
+    }
+
+    .ethic-card .icon { font-size: 2rem; margin-bottom: 0.8rem; }
+    .ethic-card h4 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+    .ethic-card p { color: var(--text-muted); font-size: 0.9rem; }
+
+    .question-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .question-section h2 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      margin-bottom: 1rem;
+    }
+
+    .question-section > p {
+      color: var(--text-muted);
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+
+    .poll {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .poll-option {
+      background: var(--bg-elevated);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .poll-option:hover {
+      border-color: var(--purple);
+      background: rgba(139,92,246,0.1);
+    }
+
+    .poll-option.selected {
+      border-color: var(--purple);
+      background: rgba(139,92,246,0.2);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+    }
+
+    .poll-result {
+      margin-top: 1.5rem;
+      color: var(--purple-light);
+      font-weight: 600;
+      min-height: 1.5rem;
+    }
+
+    .conclusion {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .conclusion h2 {
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .key-ideas {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .key-idea {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-align: left;
+    }
+
+    .key-idea .num {
+      width: 36px; height: 36px;
+      background: var(--gradient);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .key-idea p { color: var(--text); font-weight: 500; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 1.5rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ========== PROYECTO / OBJETIVOS ========== */
+    .goal-banner {
+      background: var(--gradient-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .goal-banner .label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+      margin-bottom: 0.6rem;
+    }
+
+    .goal-banner p { font-size: 1.1rem; color: var(--text); max-width: 760px; margin: 0 auto; }
+
+    .goal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .goal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s;
+    }
+
+    .goal-card:hover { border-color: rgba(139,92,246,0.5); transform: translateY(-4px); box-shadow: var(--shadow); }
+
+    .goal-card .num {
+      width: 36px; height: 36px;
+      background: var(--gradient);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .goal-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .goal-card h3 span { color: var(--purple-light); }
+    .goal-card p { color: var(--text-muted); font-size: 0.93rem; margin-bottom: 1.2rem; flex: 1; }
+    .goal-card a { color: var(--purple-light); font-weight: 600; font-size: 0.92rem; text-decoration: none; }
+    .goal-card a:hover { text-decoration: underline; }
+
+    .sources {
+      max-width: 800px;
+      margin: 2.5rem auto 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+    }
+
+    .sources h3 { font-size: 1.05rem; margin-bottom: 0.8rem; color: var(--purple-light); }
+    .sources ol { padding-left: 1.2rem; color: var(--text-muted); font-size: 0.88rem; }
+    .sources li { margin-bottom: 0.6rem; }
+    .sources a { color: var(--cyan); word-break: break-all; }
+
+    /* ========== HERRAMIENTAS INTERACTIVAS ========== */
+    .tool-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .tool-intro { text-align: center; }
+    .tool-intro p { color: var(--text-muted); max-width: 560px; margin: 0 auto 1.5rem; }
+    .tool-disclaimer { font-size: 0.82rem; color: var(--text-muted); text-align: center; margin-top: 1.5rem; opacity: 0.85; }
+
+    .progress-wrap { margin-bottom: 1.5rem; }
+    .progress-info { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .progress { height: 6px; background: var(--bg-elevated); border-radius: 999px; overflow: hidden; }
+    .progress-bar { height: 100%; width: 0; background: var(--gradient); border-radius: 999px; transition: width 0.35s ease; }
+
+    .q-cat {
+      display: inline-block;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--purple-light);
+      background: rgba(139,92,246,0.12);
+      border-radius: 999px;
+      padding: 0.25rem 0.75rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .q-text { font-size: 1.25rem; font-weight: 600; line-height: 1.4; margin-bottom: 1.25rem; }
+
+    .opt-list { display: flex; flex-direction: column; gap: 0.7rem; }
+
+    .opt {
+      background: var(--bg-elevated);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.97rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .opt:hover:not(:disabled) { border-color: var(--purple); background: rgba(139,92,246,0.1); }
+    .opt.selected { border-color: var(--purple); background: rgba(139,92,246,0.2); box-shadow: 0 0 0 3px rgba(139,92,246,0.2); }
+    .opt:disabled { cursor: default; }
+    .opt.rate-good { border-color: var(--green); background: rgba(52,211,153,0.12); }
+    .opt.rate-partial { border-color: var(--orange); background: rgba(251,146,60,0.12); }
+    .opt.rate-bad { border-color: var(--red); background: rgba(248,113,113,0.12); }
+    .opt.dim { opacity: 0.45; }
+
+    .tool-actions { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none; }
+
+    .result-head { text-align: center; margin-bottom: 1.8rem; }
+    .result-score { font-size: 3.2rem; font-weight: 800; line-height: 1; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .result-score small { font-size: 1.2rem; color: var(--text-muted); -webkit-text-fill-color: var(--text-muted); font-weight: 500; }
+    .result-label { display: inline-block; margin-top: 0.8rem; padding: 0.4rem 1.1rem; border-radius: 999px; font-weight: 700; font-size: 0.95rem; }
+    .result-label.good { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid var(--green); }
+    .result-label.partial { background: rgba(251,146,60,0.15); color: var(--orange); border: 1px solid var(--orange); }
+    .result-label.bad { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid var(--red); }
+    .result-msg { color: var(--text-muted); margin-top: 1rem; max-width: 560px; margin-left: auto; margin-right: auto; }
+
+    .cat-result { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.3rem; margin-bottom: 0.9rem; }
+    .cat-result-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; }
+    .cat-result-top span:last-child { color: var(--text-muted); font-size: 0.85rem; font-weight: 500; }
+    .cat-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; margin-bottom: 0.7rem; }
+    .cat-bar div { height: 100%; border-radius: 999px; }
+    .cat-bar .good { background: var(--green); }
+    .cat-bar .partial { background: var(--orange); }
+    .cat-bar .bad { background: var(--red); }
+    .cat-result p { color: var(--text-muted); font-size: 0.9rem; }
+
+    .scenario-top { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; }
+    .scenario-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(236,72,153,0.18); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .scenario-top h3 { font-size: 1.2rem; line-height: 1.3; }
+    .scenario-context { color: var(--text-muted); margin-bottom: 1.3rem; padding: 1rem 1.2rem; border-left: 3px solid var(--purple); background: rgba(139,92,246,0.07); border-radius: 0 12px 12px 0; }
+    .sim-q { font-weight: 600; margin-bottom: 0.9rem; }
+
+    .feedback { margin-top: 1.3rem; border-radius: 14px; padding: 1.2rem 1.4rem; border: 1px solid var(--border); background: var(--bg-elevated); animation: msgIn 0.3s ease; }
+    .feedback h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+    .feedback.good h4 { color: var(--green); }
+    .feedback.partial h4 { color: var(--orange); }
+    .feedback.bad h4 { color: var(--red); }
+    .feedback p { color: var(--text-muted); font-size: 0.93rem; margin-bottom: 0.7rem; }
+    .feedback .practice { margin-bottom: 0; color: var(--text); }
+    .feedback .practice strong { color: var(--purple-light); }
+
+    .summary-row { display: flex; gap: 0.8rem; align-items: flex-start; padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.92rem; color: var(--text-muted); }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-row b { color: var(--text); }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 600px) {
+      .tool-card { padding: 1.75rem 1.15rem; }
+      .q-text { font-size: 1.1rem; }
+    }
+
+    /* ========== CHATBOT ========== */
+    .chat-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--gradient);
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(139,92,246,0.5);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s;
+    }
+
+    .chat-toggle:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 30px rgba(139,92,246,0.6);
+    }
+
+    .chat-toggle.open {
+      background: var(--bg-elevated);
+      border: 2px solid var(--border);
+    }
+
+    .chat-window {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      width: 380px;
+      max-width: calc(100vw - 32px);
+      height: 520px;
+      max-height: calc(100vh - 140px);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      z-index: 199;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .chat-window.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+
+    .chat-header {
+      background: var(--gradient);
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: white;
+    }
+
+    .chat-header-avatar {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .chat-header-info h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .chat-header-info p {
+      font-size: 0.75rem;
+      opacity: 0.85;
+    }
+
+    .chat-header-status {
+      width: 8px;
+      height: 8px;
+      background: #34d399;
+      border-radius: 50%;
+      margin-left: auto;
+      animation: pulse 2s infinite;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(139,92,246,0.4);
+      border-radius: 10px;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 0.75rem 1rem;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      animation: msgIn 0.3s ease;
+    }
+
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.bot {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg.user {
+      background: var(--gradient);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg.typing {
+      display: flex;
+      gap: 5px;
+      padding: 1rem;
+    }
+
+    .msg.typing span {
+      width: 7px;
+      height: 7px;
+      background: var(--purple-light);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+
+    .msg.typing span:nth-child(2) { animation-delay: 0.15s; }
+    .msg.typing span:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+
+    .chat-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      padding: 0 1.2rem 0.6rem;
+    }
+
+    .suggestion {
+      background: rgba(139,92,246,0.15);
+      border: 1px solid var(--border);
+      color: var(--purple-light);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .suggestion:hover {
+      background: rgba(139,92,246,0.3);
+      border-color: var(--purple);
+    }
+
+    .chat-input-area {
+      padding: 0.9rem 1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.6rem;
+      background: var(--bg);
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.7rem 1rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .chat-input-area input:focus {
+      border-color: var(--purple);
+    }
+
+    .chat-input-area input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .chat-send {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--gradient);
+      border: none;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    .chat-send:hover {
+      transform: scale(1.05);
+    }
+
+    .chat-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    @media (max-width: 720px) {
+      .nav-links a:not(.nav-chat-btn) { display: none; }
+      .chat-window {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        bottom: 90px;
+      }
+      .chat-toggle {
+        bottom: 16px;
+        right: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">
+      <div class="logo-icon">🤖</div>
+      Pensar antes de Automatizar
+    </a>
+    <div class="nav-links">
+      <a href="#proyecto">Proyecto</a>
+      <a href="#que-es">Qué es</a>
+      <a href="#desafios">Desafíos</a>
+      <a href="#detector">Detector</a>
+      <a href="#simulador">Simulador</a>
+      <a href="#etica">Ética</a>
+      <a href="#" class="nav-chat-btn" id="nav-chat-btn">💬 Chat IA</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-content">
+      <div class="badge">Proyecto educativo · IA y Sociedad</div>
+      <h1>Pensar antes<br>de <span>Automatizar</span></h1>
+      <p>
+        La IA ya decide qué ves, cómo aprendes y cómo trabajas. Aquí aprenderás a usarla con
+        criterio: entiende su impacto, evalúa tus hábitos y practica decisiones éticas.
+      </p>
+      <div class="cta-group">
+        <a href="#detector" class="btn btn-primary">Evaluar mi uso de la IA →</a>
+        <a href="#simulador" class="btn btn-secondary">⚖️ Probar el simulador</a>
+        <button class="btn btn-secondary" id="hero-chat-btn">💬 Hablar con el asistente IA</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- OBJETIVOS -->
+  <section id="proyecto" style="padding-top: 2rem;">
+    <div class="container">
+      <div class="section-header">
+        <h2>Sobre este proyecto</h2>
+        <p>Una herramienta educativa para formar usuarios conscientes, críticos y responsables</p>
+      </div>
+      <div class="goal-banner">
+        <span class="label">Objetivo general</span>
+        <p>
+          Desarrollar una página web educativa e interactiva sobre la relación entre la inteligencia
+          artificial y la sociedad, que promueva el uso responsable de estas tecnologías mediante un
+          detector de buenas prácticas y un simulador de decisiones éticas.
+        </p>
+      </div>
+      <div class="goal-grid">
+        <div class="goal-card">
+          <div class="num">1</div>
+          <h3><span>Investigar y presentar</span> información relevante</h3>
+          <p>Qué es la IA, dónde se aplica en la sociedad y cuáles son sus principales desafíos: ética, privacidad, sesgos y uso responsable de la información.</p>
+          <a href="#que-es">Ir a la sección informativa →</a>
+        </div>
+        <div class="goal-card">
+          <div class="num">2</div>
+          <h3><span>Diseñar e implementar</span> un detector de uso responsable</h3>
+          <p>Un cuestionario para evaluar tus propias prácticas con la IA y recibir recomendaciones educativas según tus respuestas.</p>
+          <a href="#detector">Probar el detector →</a>
+        </div>
+        <div class="goal-card">
+          <div class="num">3</div>
+          <h3><span>Desarrollar</span> un simulador de decisiones éticas</h3>
+          <p>Situaciones reales donde eliges entre varias alternativas y conoces sus consecuencias y las prácticas recomendadas.</p>
+          <a href="#simulador">Probar el simulador →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUÉ ES -->
+  <section id="que-es">
+    <div class="container">
+      <div class="section-header">
+        <h2>¿Qué es realmente la IA?</h2>
+        <p>Más allá del hype: una definición clara</p>
+      </div>
+      <div class="def-grid">
+        <div class="def-text">
+          <h3>No es magia. Es tecnología.</h3>
+          <p>
+            La inteligencia artificial es un conjunto de sistemas capaces de realizar 
+            tareas que normalmente requieren inteligencia humana: aprender de datos, 
+            reconocer patrones, entender lenguaje, generar contenido y apoyar decisiones.
+          </p>
+          <p>
+            Desde el asistente de tu teléfono hasta los algoritmos que recomiendan 
+            series o detectan enfermedades en radiografías, la IA ya forma parte 
+            del tejido cotidiano.
+          </p>
+          <div class="cap-list">
+            <span class="cap-tag">Aprendizaje automático</span>
+            <span class="cap-tag">Procesamiento de lenguaje</span>
+            <span class="cap-tag">Visión por computador</span>
+            <span class="cap-tag">Generación de contenido</span>
+            <span class="cap-tag">Predicción</span>
+          </div>
+        </div>
+        <div class="def-visual">
+          <div class="code-block">
+            <span class="comment">// La IA en una línea</span><br>
+            <span class="keyword">function</span> <span class="func">inteligenciaArtificial</span>(datos) {<br>
+            &nbsp;&nbsp;<span class="keyword">const</span> patrones = <span class="func">aprender</span>(datos);<br>
+            &nbsp;&nbsp;<span class="keyword">return</span> <span class="func">predecir</span>(patrones);<br>
+            }<br><br>
+            <span class="comment">// Resultado: sistemas que</span><br>
+            <span class="comment">// mejoran con la experiencia</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACTO -->
+  <section id="impacto">
+    <div class="container">
+      <div class="section-header">
+        <h2>Dónde ya está transformando la vida</h2>
+        <p>Áreas donde la IA dejó de ser “el futuro” y se convirtió en presente</p>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(139,92,246,0.2);">🎓</div>
+          <h3>Educación</h3>
+          <p>Tutores personalizados, generación de ejercicios y adaptación al ritmo de cada estudiante.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(236,72,153,0.2);">🏥</div>
+          <h3>Salud</h3>
+          <p>Apoyo en diagnósticos, análisis de imágenes médicas y descubrimiento de fármacos.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(34,211,238,0.2);">💼</div>
+          <h3>Trabajo</h3>
+          <p>Automatización de tareas repetitivas y herramientas que amplifican la productividad humana.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(52,211,153,0.2);">🚗</div>
+          <h3>Movilidad</h3>
+          <p>Rutas inteligentes, vehículos autónomos y sistemas de tráfico más eficientes.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(251,146,60,0.2);">🎬</div>
+          <h3>Entretenimiento</h3>
+          <p>Recomendaciones personalizadas en plataformas de video, música y contenido.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(248,113,113,0.2);">🛒</div>
+          <h3>Consumo</h3>
+          <p>Sistemas de recomendación, detección de fraude y atención al cliente automatizada.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFICIOS vs RIESGOS -->
+  <section id="balance">
+    <div class="container">
+      <div class="section-header">
+        <h2>Beneficios y riesgos</h2>
+        <p>La misma tecnología puede liberar potencial o generar nuevos problemas</p>
+      </div>
+      <div class="split-grid">
+        <div class="split-box good">
+          <h3>✅ Potencial positivo</h3>
+          <ul>
+            <li>Automatiza tareas repetitivas y libera tiempo humano</li>
+            <li>Analiza volúmenes de datos imposibles para una persona</li>
+            <li>Personaliza el aprendizaje y la atención médica</li>
+            <li>Mejora la accesibilidad para personas con discapacidad</li>
+            <li>Acelera la investigación científica y médica</li>
+            <li>Optimiza recursos (energía, transporte, logística)</li>
+          </ul>
+        </div>
+        <div class="split-box bad">
+          <h3>⚠️ Riesgos reales</h3>
+          <ul>
+            <li>Desinformación: deepfakes, textos e imágenes falsas</li>
+            <li>Privacidad: uso masivo de datos personales</li>
+            <li>Sesgos: la IA puede amplificar prejuicios existentes</li>
+            <li>Dependencia: delegar demasiado el pensamiento crítico</li>
+            <li>Desigualdad: no todos tienen el mismo acceso</li>
+            <li>Falta de transparencia: “cajas negras” difíciles de auditar</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMPLEO -->
+  <section id="empleo">
+    <div class="container">
+      <div class="section-header">
+        <h2>¿La IA reemplazará el trabajo humano?</h2>
+        <p>La respuesta corta: no es tan simple como “sí” o “no”</p>
+      </div>
+      <div class="empleo-cards">
+        <div class="empleo-card">
+          <div class="num">01</div>
+          <h4>Automatiza tareas</h4>
+          <p>Especialmente las repetitivas y predecibles</p>
+        </div>
+        <div class="empleo-card">
+          <div class="num">02</div>
+          <h4>Transforma roles</h4>
+          <p>Muchos empleos cambian y requieren nuevas habilidades</p>
+        </div>
+        <div class="empleo-card">
+          <div class="num">03</div>
+          <h4>Crea profesiones</h4>
+          <p>Aparecen trabajos de diseño, supervisión y ética de IA</p>
+        </div>
+        <div class="empleo-card">
+          <div class="num">04</div>
+          <h4>Aumenta capacidades</h4>
+          <p>La IA puede potenciar, no solo sustituir, a las personas</p>
+        </div>
+      </div>
+      <div class="note-box">
+        El impacto en el empleo depende de <strong>qué tareas</strong> se automatizan, 
+        de las <strong>habilidades digitales</strong> de la población y de 
+        <strong>cómo se decide usar</strong> la tecnología.
+      </div>
+    </div>
+  </section>
+
+  <!-- DESAFÍOS -->
+  <section id="desafios">
+    <div class="container">
+      <div class="section-header">
+        <h2>Los cuatro desafíos clave</h2>
+        <p>Lo que más conviene entender antes de delegar algo en una IA</p>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(34,211,238,0.2);">🔒</div>
+          <h3>Privacidad y datos personales</h3>
+          <p>Lo que escribes en una herramienta de IA puede almacenarse o usarse para entrenarla. Evita compartir documentos de identidad, datos de salud, claves o información de otras personas, y revisa la política de privacidad.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(251,146,60,0.2);">✔️</div>
+          <h3>Verificación de la información</h3>
+          <p>La IA puede sonar muy segura y aun así inventar datos, citas o fuentes (“alucinaciones”). Contrasta lo importante con fuentes confiables antes de usarlo o compartirlo.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(236,72,153,0.2);">⚖️</div>
+          <h3>Sesgos algorítmicos</h3>
+          <p>Si los datos de entrenamiento reflejan prejuicios, el sistema puede reproducirlos y tomar decisiones injustas, por ejemplo al seleccionar personal o aprobar créditos.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(139,92,246,0.2);">🧑‍⚖️</div>
+          <h3>Responsabilidad humana</h3>
+          <p>Un sistema automatizado no responde por sus errores: lo hacen las personas y organizaciones que lo diseñan, lo entrenan y deciden usarlo. Reconocer cuándo usaste IA también es parte de ello.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETECTOR -->
+  <section id="detector">
+    <div class="container">
+      <div class="section-header">
+        <h2>Detector de uso responsable de la IA</h2>
+        <p>8 preguntas sobre tus hábitos y recomendaciones para mejorarlos</p>
+      </div>
+      <div class="tool-card" id="detector-card">
+        <div id="det-intro" class="tool-intro">
+          <div style="font-size: 3rem; margin-bottom: 0.5rem;">🧭</div>
+          <p>Responde con sinceridad: no hay respuestas “correctas” para quedar bien, sino hábitos que podemos mejorar. Evaluaremos verificación de información, protección de datos, transparencia y uso para aprender.</p>
+          <button class="btn btn-primary" id="det-start">Comenzar el cuestionario →</button>
+        </div>
+
+        <div id="det-quiz" class="hidden">
+          <div class="progress-wrap">
+            <div class="progress-info"><span id="det-count">Pregunta 1 de 8</span><span id="det-cat-small"></span></div>
+            <div class="progress"><div class="progress-bar" id="det-bar"></div></div>
+          </div>
+          <span class="q-cat" id="det-cat"></span>
+          <div class="q-text" id="det-question"></div>
+          <div class="opt-list" id="det-options"></div>
+          <div class="tool-actions">
+            <button class="btn btn-secondary" id="det-prev">← Anterior</button>
+            <button class="btn btn-primary" id="det-next" disabled>Siguiente →</button>
+          </div>
+        </div>
+
+        <div id="det-result" class="hidden"></div>
+        <p class="tool-disclaimer">Esta clasificación es orientativa y tiene fines educativos; no constituye una certificación definitiva de tu comportamiento. Tus respuestas no se guardan ni se envían.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIMULADOR -->
+  <section id="simulador">
+    <div class="container">
+      <div class="section-header">
+        <h2>Simulador de decisiones éticas</h2>
+        <p>Cuatro situaciones. Tú decides; después descubres las consecuencias.</p>
+      </div>
+      <div class="tool-card" id="sim-card">
+        <div id="sim-intro" class="tool-intro">
+          <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚖️</div>
+          <p>Te pondrás en el lugar de quien debe decidir cómo actuar ante un dilema con IA: discriminación algorítmica, privacidad, desinformación y decisiones automatizadas.</p>
+          <button class="btn btn-primary" id="sim-start">Comenzar el simulador →</button>
+        </div>
+
+        <div id="sim-play" class="hidden">
+          <div class="progress-wrap">
+            <div class="progress-info"><span id="sim-count">Escenario 1 de 4</span><span id="sim-topic"></span></div>
+            <div class="progress"><div class="progress-bar" id="sim-bar"></div></div>
+          </div>
+          <div class="scenario-top">
+            <div class="scenario-icon" id="sim-icon"></div>
+            <h3 id="sim-title"></h3>
+          </div>
+          <div class="scenario-context" id="sim-context"></div>
+          <div class="sim-q">¿Qué decides hacer?</div>
+          <div class="opt-list" id="sim-options"></div>
+          <div class="feedback hidden" id="sim-feedback"></div>
+          <div class="tool-actions" style="justify-content: flex-end;">
+            <button class="btn btn-primary hidden" id="sim-next">Siguiente escenario →</button>
+          </div>
+        </div>
+
+        <div id="sim-result" class="hidden"></div>
+        <p class="tool-disclaimer">Los escenarios son hipotéticos y buscan promover la reflexión; en la vida real cada caso exige analizar su contexto, la normativa aplicable y a las personas afectadas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉTICA -->
+  <section id="etica">
+    <div class="container">
+      <div class="section-header">
+        <h2>Ética y responsabilidad</h2>
+        <p>La tecnología no decide sola. Las personas sí.</p>
+      </div>
+      <div class="ethics-grid">
+        <div class="ethic-card">
+          <div class="icon">📖</div>
+          <h4>Educación</h4>
+          <p>Entender cómo funciona la IA para usarla con criterio</p>
+        </div>
+        <div class="ethic-card">
+          <div class="icon">❤️</div>
+          <h4>Ética</h4>
+          <p>Diseñar sistemas que respeten dignidad y derechos humanos</p>
+        </div>
+        <div class="ethic-card">
+          <div class="icon">🔍</div>
+          <h4>Transparencia</h4>
+          <p>Poder explicar por qué un sistema tomó una decisión</p>
+        </div>
+        <div class="ethic-card">
+          <div class="icon">🛡️</div>
+          <h4>Supervisión humana</h4>
+          <p>Mantener el control final en manos de personas</p>
+        </div>
+      </div>
+      <p style="text-align: center; margin-top: 2.5rem; color: var(--text-muted); max-width: 600px; margin-left: auto; margin-right: auto;">
+        Organismos como la UNESCO impulsan un enfoque centrado en los derechos humanos, 
+        la inclusión, la sostenibilidad y la supervisión humana de la inteligencia artificial.
+      </p>
+    </div>
+  </section>
+
+  <!-- ANTECEDENTES -->
+  <section id="antecedentes">
+    <div class="container">
+      <div class="section-header">
+        <h2>Antecedentes y referentes</h2>
+        <p>Principios internacionales en los que se apoya este proyecto</p>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(139,92,246,0.2);">🌐</div>
+          <h3>UNESCO · 2021</h3>
+          <p>Recomendación sobre la Ética de la Inteligencia Artificial: derechos humanos, dignidad, inclusión y supervisión humana.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(34,211,238,0.2);">🏛️</div>
+          <h3>OCDE · actualizado en 2024</h3>
+          <p>Principios sobre IA para desarrollar y usar sistemas confiables, respetuosos de los derechos humanos y sujetos a rendición de cuentas.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon" style="background: rgba(52,211,153,0.2);">🧪</div>
+          <h3>NIST · 2023</h3>
+          <p>Marco de Gestión de Riesgos de IA (AI RMF 1.0): orientaciones para identificar, evaluar y gestionar los riesgos de estos sistemas.</p>
+        </div>
+      </div>
+      <p style="text-align: center; margin-top: 2rem; color: var(--text-muted); max-width: 680px; margin-left: auto; margin-right: auto;">
+        Estos documentos muestran que el desarrollo tecnológico debe ir acompañado de educación, reflexión ética y
+        participación consciente de las personas. Este proyecto adapta esos principios a una herramienta web interactiva.
+      </p>
+      <div class="sources">
+        <h3>Fuentes consultadas</h3>
+        <ol>
+          <li>UNESCO. (2021). <em>Recomendación sobre la Ética de la Inteligencia Artificial</em>.<br>
+            <a href="https://www.unesco.org/es/artificial-intelligence/recommendation-ethics" target="_blank" rel="noopener">https://www.unesco.org/es/artificial-intelligence/recommendation-ethics</a></li>
+          <li>OCDE. (2024). <em>Principios de la OCDE sobre inteligencia artificial</em>.<br>
+            <a href="https://oecd.ai/en/ai-principles" target="_blank" rel="noopener">https://oecd.ai/en/ai-principles</a></li>
+          <li>NIST. (2023). <em>Artificial Intelligence Risk Management Framework (AI RMF 1.0)</em>.<br>
+            <a href="https://doi.org/10.6028/NIST.AI.100-1" target="_blank" rel="noopener">https://doi.org/10.6028/NIST.AI.100-1</a></li>
+          <li>Comisión Europea. (s. f.). <em>Excelencia y confianza en la inteligencia artificial</em>.<br>
+            <a href="https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence" target="_blank" rel="noopener">https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence</a></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- TU OPINIÓN -->
+  <section id="opinion">
+    <div class="container">
+      <div class="question-section">
+        <h2>¿La IA está cambiando la sociedad para mejor?</h2>
+        <p>No hay respuesta única. Elige la que más se acerque a tu punto de vista.</p>
+        <div class="poll">
+          <div class="poll-option" data-value="A">Sí, los beneficios superan los riesgos</div>
+          <div class="poll-option" data-value="B">No, los riesgos son demasiado altos</div>
+          <div class="poll-option" data-value="C">Depende de cómo la regulemos y usemos</div>
+          <div class="poll-option" data-value="D">Aún es pronto para saberlo</div>
+        </div>
+        <div class="poll-result" id="poll-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONCLUSIÓN -->
+  <section>
+    <div class="container">
+      <div class="conclusion">
+        <h2>Tres ideas para llevarse</h2>
+        <div class="key-ideas">
+          <div class="key-idea">
+            <div class="num">1</div>
+            <p>La inteligencia artificial no es buena ni mala por sí misma.</p>
+          </div>
+          <div class="key-idea">
+            <div class="num">2</div>
+            <p>Lo importante es cómo, para qué y bajo qué principios la utilizamos.</p>
+          </div>
+          <div class="key-idea">
+            <div class="num">3</div>
+            <p>La responsabilidad final sigue siendo —y debe seguir siendo— humana.</p>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="conclusion-chat-btn" style="margin-top: 1rem;">💬 Pregúntale al asistente IA</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      <strong>Pensar antes de Automatizar</strong> · Inteligencia Artificial y Sociedad<br>
+      Proyecto educativo de Ingeniería de Sistemas · Incluye detector, simulador y asistente de IA
+    </p>
+  </footer>
+
+  <!-- ========== CHATBOT UI ========== -->
+  <button class="chat-toggle" id="chat-toggle" title="Abrir chat">💬</button>
+
+  <div class="chat-window" id="chat-window">
+    <div class="chat-header">
+      <div class="chat-header-avatar">🤖</div>
+      <div class="chat-header-info">
+        <h3>Asistente IA</h3>
+        <p>Experto en IA y Sociedad</p>
+      </div>
+      <div class="chat-header-status" title="En línea"></div>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg bot">
+        ¡Hola! 👋 Soy el asistente de <strong>Pensar antes de Automatizar</strong>.<br><br>Puedes preguntarme sobre inteligencia artificial, sus riesgos, privacidad, sesgos, ética, y sobre cómo usar el detector y el simulador.<br><br>¿En qué te ayudo?
+      </div>
+    </div>
+
+    <div class="chat-suggestions" id="chat-suggestions">
+      <span class="suggestion">¿Qué es la IA?</span>
+      <span class="suggestion">¿Reemplazará empleos?</span>
+      <span class="suggestion">¿Cómo protejo mi privacidad?</span>
+      <span class="suggestion">¿Qué es un sesgo algorítmico?</span>
+      <span class="suggestion">¿Cómo funciona el detector?</span>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="Escribe tu pregunta..." autocomplete="off">
+      <button class="chat-send" id="chat-send">➤</button>
+    </div>
+  </div>
+
+  <script>
+    // ========== POLL ==========
+    const options = document.querySelectorAll('.poll-option');
+    const result = document.getElementById('poll-result');
+    const messages = {
+      A: 'Crees que el potencial positivo de la IA es mayor. La clave estará en maximizar beneficios y minimizar riesgos.',
+      B: 'Priorizas la precaución. Muchos expertos coinciden en que necesitamos límites claros antes de avanzar más.',
+      C: 'Tu visión es la más compartida por especialistas: el resultado depende de las reglas y del uso responsable.',
+      D: 'Mantienes una postura abierta. La tecnología avanza rápido y aún estamos midiendo sus efectos reales.'
+    };
+    options.forEach(opt => {
+      opt.addEventListener('click', () => {
+        options.forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        result.textContent = messages[opt.dataset.value];
+      });
+    });
+
+    // ========== UTILIDADES ==========
+    const $ = (id) => document.getElementById(id);
+    const shuffle = (arr) => {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+
+    // ========== DETECTOR DE USO RESPONSABLE ==========
+    const catNames = {
+      verificacion: 'Verificación de la información',
+      privacidad: 'Protección de datos personales',
+      transparencia: 'Transparencia y origen del contenido',
+      aprendizaje: 'Uso de la IA para aprender'
+    };
+
+    const catTips = {
+      verificacion: {
+        bad: 'Contrasta siempre las cifras, fechas, citas y fuentes con sitios confiables. La IA puede inventar datos con total seguridad (“alucinaciones”).',
+        partial: 'Vas por buen camino. Haz de la verificación un hábito: no solo cuando algo “suena raro”, sino con todo dato que vayas a usar o compartir.',
+        good: 'Excelente: contrastas lo que la IA te dice. Mantén ese criterio, sobre todo con temas de salud, leyes o dinero.'
+      },
+      privacidad: {
+        bad: 'Evita escribir datos personales (documentos, direcciones, salud, claves) o información de terceros en herramientas de IA. Lo que compartes puede almacenarse o reutilizarse.',
+        partial: 'Revisa la política de privacidad y la configuración de cada herramienta, y anonimiza los datos antes de compartirlos.',
+        good: 'Proteges bien tus datos y los de otras personas. Sigue revisando las condiciones de uso cuando cambien.'
+      },
+      transparencia: {
+        bad: 'Indica cuándo usaste IA en un trabajo y verifica el origen de imágenes y videos antes de compartirlos: pueden ser falsos o manipulados.',
+        partial: 'Da un paso más: menciona siempre cómo usaste la IA y busca el origen de lo viral antes de reenviarlo.',
+        good: 'Eres transparente con el uso de la IA y cuidadoso con lo que compartes. Eso ayuda a frenar la desinformación.'
+      },
+      aprendizaje: {
+        bad: 'Usa la IA como tutor, no como sustituto: pídele explicaciones y ejemplos, y luego intenta resolver por tu cuenta. Delegar todo el pensamiento debilita tu aprendizaje.',
+        partial: 'Intenta primero por tu cuenta y usa la IA para contrastar, entender errores o profundizar; evita copiar sin comprender.',
+        good: 'Usas la IA como apoyo y conservas tu criterio. Esa es la mejor forma de aprender con ella.'
+      }
+    };
+
+    const quizQuestions = [
+      { cat: 'verificacion', text: 'Una herramienta de IA te da un dato importante (cifras, fechas, citas). ¿Qué haces?', opts: [
+        { t: 'Lo uso tal cual; si lo dijo la IA, debe estar bien.', p: 0 },
+        { t: 'Lo reviso solo si me parece raro.', p: 1 },
+        { t: 'Lo contrasto con fuentes confiables antes de usarlo.', p: 2 } ] },
+      { cat: 'verificacion', text: 'La IA te entrega una referencia o fuente para respaldar su respuesta. ¿Cómo procedes?', opts: [
+        { t: 'La copio sin revisarla.', p: 0 },
+        { t: 'Compruebo que “parezca” real.', p: 1 },
+        { t: 'Verifico que exista y que realmente diga lo que la IA afirma.', p: 2 } ] },
+      { cat: 'privacidad', text: '¿Compartes datos personales (tuyos o de otras personas) con herramientas de IA?', opts: [
+        { t: 'Sí, con frecuencia y sin pensarlo mucho.', p: 0 },
+        { t: 'A veces, si la tarea lo requiere.', p: 1 },
+        { t: 'Evito hacerlo, o los anonimizo antes.', p: 2 } ] },
+      { cat: 'privacidad', text: 'Antes de usar una herramienta de IA nueva, ¿revisas cómo trata tus datos?', opts: [
+        { t: 'Nunca; acepto los términos sin leerlos.', p: 0 },
+        { t: 'Solo si algo me llama la atención.', p: 1 },
+        { t: 'Reviso su política de privacidad y la configuración.', p: 2 } ] },
+      { cat: 'transparencia', text: 'Usas contenido generado por IA en un trabajo o publicación. ¿Qué haces?', opts: [
+        { t: 'Lo presento como si fuera totalmente mío.', p: 0 },
+        { t: 'Lo modifico un poco y no menciono la IA.', p: 1 },
+        { t: 'Indico que usé IA y para qué la utilicé.', p: 2 } ] },
+      { cat: 'transparencia', text: 'Ves una imagen o video impactante en redes sociales. ¿Lo compartes?', opts: [
+        { t: 'Sí, de inmediato.', p: 0 },
+        { t: 'Si me parece creíble.', p: 1 },
+        { t: 'Primero verifico el origen y si pudo ser generado o manipulado.', p: 2 } ] },
+      { cat: 'aprendizaje', text: 'Cuando estudias o haces una tarea con IA, ¿cómo la usas?', opts: [
+        { t: 'Le pido que la haga completa por mí.', p: 0 },
+        { t: 'Copio sus respuestas y las adapto un poco.', p: 1 },
+        { t: 'Como apoyo: pido explicaciones o ejemplos y luego lo intento yo.', p: 2 } ] },
+      { cat: 'aprendizaje', text: 'Lo que dice la IA no coincide con tu criterio o con lo que ya sabes. ¿Qué haces?', opts: [
+        { t: 'Confío en la IA.', p: 0 },
+        { t: 'Dudo, pero suelo quedarme con su respuesta.', p: 1 },
+        { t: 'Investigo y decido yo con base en fuentes.', p: 2 } ] }
+    ];
+
+    const det = { i: 0, answers: [], order: [] };
+
+    function detRender() {
+      const q = quizQuestions[det.i];
+      $('det-count').textContent = `Pregunta ${det.i + 1} de ${quizQuestions.length}`;
+      $('det-bar').style.width = `${(det.i / quizQuestions.length) * 100}%`;
+      $('det-cat').textContent = catNames[q.cat];
+      $('det-question').textContent = q.text;
+      if (!det.order[det.i]) det.order[det.i] = shuffle(q.opts);
+      const box = $('det-options');
+      box.innerHTML = '';
+      det.order[det.i].forEach((o) => {
+        const b = document.createElement('button');
+        b.className = 'opt' + (det.answers[det.i] === o ? ' selected' : '');
+        b.textContent = o.t;
+        b.addEventListener('click', () => {
+          det.answers[det.i] = o;
+          box.querySelectorAll('.opt').forEach(x => x.classList.remove('selected'));
+          b.classList.add('selected');
+          $('det-next').disabled = false;
+        });
+        box.appendChild(b);
+      });
+      $('det-prev').style.visibility = det.i === 0 ? 'hidden' : 'visible';
+      $('det-next').disabled = !det.answers[det.i];
+      $('det-next').textContent = det.i === quizQuestions.length - 1 ? 'Ver resultado ✓' : 'Siguiente →';
+    }
+
+    function detStart() {
+      det.i = 0; det.answers = []; det.order = [];
+      $('det-intro').classList.add('hidden');
+      $('det-result').classList.add('hidden');
+      $('det-quiz').classList.remove('hidden');
+      detRender();
+    }
+
+    function levelOf(ratio) { return ratio >= 0.8 ? 'good' : ratio >= 0.5 ? 'partial' : 'bad'; }
+
+    function detShowResult() {
+      const total = det.answers.reduce((s, a) => s + a.p, 0);
+      const max = quizQuestions.length * 2;
+      const catScore = {}, catMax = {};
+      quizQuestions.forEach((q, i) => {
+        catScore[q.cat] = (catScore[q.cat] || 0) + det.answers[i].p;
+        catMax[q.cat] = (catMax[q.cat] || 0) + 2;
+      });
+      let label, cls, msg;
+      if (total >= 13) {
+        label = 'Uso responsable'; cls = 'good';
+        msg = 'Tus hábitos muestran criterio, cuidado con los datos y transparencia. Sigue así y ayuda a otras personas a usar la IA con la misma responsabilidad.';
+      } else if (total >= 8) {
+        label = 'Uso moderado'; cls = 'partial';
+        msg = 'Tienes buenas bases, pero hay prácticas que conviene reforzar. Revisa las recomendaciones de cada categoría.';
+      } else {
+        label = 'Uso riesgoso'; cls = 'bad';
+        msg = 'Algunos de tus hábitos podrían exponerte a errores, problemas de privacidad o desinformación. Las recomendaciones de abajo son un buen punto de partida.';
+      }
+      const cats = Object.keys(catNames).map((k) => {
+        const lv = levelOf(catScore[k] / catMax[k]);
+        const names = { good: 'Fuerte', partial: 'En camino', bad: 'Por mejorar' };
+        return `<div class="cat-result">
+          <div class="cat-result-top"><span>${catNames[k]}</span><span>${names[lv]} · ${catScore[k]}/${catMax[k]}</span></div>
+          <div class="cat-bar"><div class="${lv}" style="width:${(catScore[k] / catMax[k]) * 100}%"></div></div>
+          <p>${catTips[k][lv]}</p>
+        </div>`;
+      }).join('');
+      $('det-bar').style.width = '100%';
+      $('det-quiz').classList.add('hidden');
+      const res = $('det-result');
+      res.innerHTML = `
+        <div class="result-head">
+          <div class="result-score">${total}<small> / ${max}</small></div>
+          <span class="result-label ${cls}">${label}</span>
+          <p class="result-msg">${msg}</p>
+        </div>
+        ${cats}
+        <div class="tool-actions" style="justify-content:center;">
+          <button class="btn btn-secondary" id="det-restart">↺ Repetir el cuestionario</button>
+          <a class="btn btn-primary" href="#simulador">Ir al simulador →</a>
+        </div>`;
+      res.classList.remove('hidden');
+      $('det-restart').addEventListener('click', detStart);
+      $('detector-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    $('det-start').addEventListener('click', detStart);
+    $('det-prev').addEventListener('click', () => { if (det.i > 0) { det.i--; detRender(); } });
+    $('det-next').addEventListener('click', () => {
+      if (!det.answers[det.i]) return;
+      if (det.i < quizQuestions.length - 1) { det.i++; detRender(); }
+      else detShowResult();
+    });
+
+    // ========== SIMULADOR DE DECISIONES ÉTICAS ==========
+    const scenarios = [
+      {
+        icon: '💼', topic: 'Discriminación algorítmica',
+        title: 'La IA que filtra candidatos',
+        context: 'Una empresa usa un sistema de IA para preseleccionar hojas de vida. Meses después, un análisis interno revela que el sistema rechaza de forma desproporcionada a candidatos de un grupo determinado. Tú eres responsable de talento humano.',
+        opts: [
+          { t: 'Seguir usándolo: la IA es objetiva y los números “son los números”.', r: 'bad',
+            c: 'La IA aprende de datos históricos y puede reproducir —e incluso amplificar— prejuicios del pasado. Ignorar la evidencia perpetúa la discriminación y expone a la empresa a daños reputacionales y legales.' },
+          { t: 'Suspender el uso, auditar los datos y el modelo, y mantener una revisión humana de las decisiones.', r: 'good',
+            c: 'Se detiene el daño, se investiga el origen del sesgo (datos, variables, diseño) y se garantiza que una persona revise las decisiones. Así se corrige el problema y se recupera la confianza.' },
+          { t: 'Seguir usándolo, pero ocultar la variable que parece causar el sesgo.', r: 'partial',
+            c: 'Quitar una variable no basta: otras variables pueden funcionar como “sustitutos” de la misma característica. Es un paso, pero sin auditoría ni supervisión humana el sesgo puede persistir.' }
+        ],
+        practice: 'Auditar periódicamente los sistemas, usar datos representativos, documentar cómo se decide y mantener supervisión humana en decisiones que afectan oportunidades de las personas.'
+      },
+      {
+        icon: '🔒', topic: 'Privacidad',
+        title: 'Datos de estudiantes en un chatbot público',
+        context: 'Eres docente. Para ahorrar tiempo, quieres que una IA pública te ayude a redactar informes de seguimiento. Tienes a mano nombres, notas, diagnósticos de aprendizaje y datos familiares de tus estudiantes.',
+        opts: [
+          { t: 'Pegar toda la información tal cual para obtener informes más precisos.', r: 'bad',
+            c: 'Compartes datos sensibles de menores con un tercero, sin consentimiento y sin control sobre cómo se almacenan o reutilizan. Es un riesgo grave de privacidad y puede incumplir normas de protección de datos.' },
+          { t: 'Eliminar nombres y datos identificables, e incluir solo lo estrictamente necesario.', r: 'partial',
+            c: 'Reduces el riesgo, pero la anonimización no siempre es perfecta (combinaciones de datos pueden identificar a alguien) y puede que tu institución tenga reglas sobre usar estas herramientas.' },
+          { t: 'Consultar la política de la institución y usar una herramienta aprobada que proteja los datos; si no la hay, redactar los informes sin IA.', r: 'good',
+            c: 'Respetas la normativa, proteges a los estudiantes y asumes que la comodidad no justifica exponer datos sensibles.' }
+        ],
+        practice: 'Aplicar el principio de minimización de datos: compartir solo lo necesario, anonimizar, revisar las condiciones de uso y priorizar herramientas autorizadas.'
+      },
+      {
+        icon: '📰', topic: 'Desinformación',
+        title: 'El video viral que parece real',
+        context: 'En tu grupo de mensajería circula un video muy realista de un candidato local diciendo algo escandaloso, a pocos días de unas elecciones. Todos lo están reenviando y tú sospechas que podría estar generado con IA.',
+        opts: [
+          { t: 'Reenviarlo con un “¡Increíble, mírenlo!”: si es falso, ya lo aclararán otros.', r: 'bad',
+            c: 'Contribuyes a la propagación de desinformación. Los deepfakes se difunden rápido y el daño puede ocurrir antes de cualquier desmentido.' },
+          { t: 'No reenviarlo y ya, sin decir nada.', r: 'partial',
+            c: 'Evitas amplificarlo, lo cual está bien, pero pierdes la oportunidad de frenar su circulación y de ayudar a otros a pensar críticamente.' },
+          { t: 'Verificar la fuente original y consultar medios o verificadores confiables; compartir lo que encuentres y avisar al grupo del posible engaño.', r: 'good',
+            c: 'Aplicas verificación activa y ayudas a que tu entorno desarrolle criterio. Es la forma más efectiva de reducir el alcance de la desinformación.' }
+        ],
+        practice: 'Verificar el origen antes de compartir, buscar la misma noticia en medios confiables, desconfiar de contenido que provoca reacciones emocionales fuertes y comunicar la duda de forma responsable.'
+      },
+      {
+        icon: '🏦', topic: 'Decisiones automatizadas',
+        title: 'Crédito negado sin explicación',
+        context: 'Un banco automatiza la aprobación de microcréditos con IA. Una clienta con ingresos estables es rechazada y, al reclamar, le dicen que “lo decidió el sistema” y que no pueden explicar por qué. Tú eres el jefe del área de riesgos.',
+        opts: [
+          { t: 'Mantener la política: el algoritmo es más eficiente y no se equivoca.', r: 'bad',
+            c: 'Ningún sistema está libre de errores. Sin explicación ni posibilidad de reclamo se pierde transparencia y las personas afectadas quedan indefensas ante decisiones que impactan su vida.' },
+          { t: 'Informar el motivo general del rechazo, pero sin posibilidad de apelar.', r: 'partial',
+            c: 'La transparencia mejora, pero sin una vía de revisión humana los errores y sesgos no se corrigen y la persona sigue sin protección.' },
+          { t: 'Explicar los factores principales de la decisión, ofrecer revisión humana y registrar los casos para evaluar posibles errores o sesgos.', r: 'good',
+            c: 'Se combina eficiencia con derechos: la persona entiende y puede impugnar la decisión, y la organización aprende de los casos para mejorar el sistema.' }
+        ],
+        practice: 'Garantizar explicabilidad, supervisión humana y mecanismos de reclamo en decisiones importantes automatizadas. La responsabilidad final sigue siendo humana.'
+      }
+    ];
+
+    const ratingInfo = {
+      good: { title: '✅ Decisión responsable', pts: 2, icon: '✅' },
+      partial: { title: '🟠 Decisión mejorable', pts: 1, icon: '🟠' },
+      bad: { title: '⚠️ Decisión riesgosa', pts: 0, icon: '⚠️' }
+    };
+
+    const sim = { i: 0, results: [] };
+
+    function simRender() {
+      const s = scenarios[sim.i];
+      $('sim-count').textContent = `Escenario ${sim.i + 1} de ${scenarios.length}`;
+      $('sim-topic').textContent = s.topic;
+      $('sim-bar').style.width = `${(sim.i / scenarios.length) * 100}%`;
+      $('sim-icon').textContent = s.icon;
+      $('sim-title').textContent = s.title;
+      $('sim-context').textContent = s.context;
+      $('sim-feedback').classList.add('hidden');
+      $('sim-next').classList.add('hidden');
+      $('sim-next').textContent = sim.i === scenarios.length - 1 ? 'Ver resumen ✓' : 'Siguiente escenario →';
+      const box = $('sim-options');
+      box.innerHTML = '';
+      shuffle(s.opts).forEach((o) => {
+        const b = document.createElement('button');
+        b.className = 'opt';
+        b.textContent = o.t;
+        b.addEventListener('click', () => simChoose(o, b));
+        box.appendChild(b);
+      });
+    }
+
+    function simChoose(o, btn) {
+      const s = scenarios[sim.i];
+      sim.results[sim.i] = o.r;
+      const btns = $('sim-options').querySelectorAll('.opt');
+      btns.forEach((b) => { b.disabled = true; if (b !== btn) b.classList.add('dim'); });
+      btn.classList.add('rate-' + o.r);
+      const info = ratingInfo[o.r];
+      const fb = $('sim-feedback');
+      fb.className = 'feedback ' + o.r;
+      fb.innerHTML = `<h4>${info.title}</h4>
+        <p><strong>Consecuencias:</strong> ${o.c}</p>
+        <p class="practice"><strong>Práctica recomendada:</strong> ${s.practice}</p>`;
+      $('sim-next').classList.remove('hidden');
+      fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function simStart() {
+      sim.i = 0; sim.results = [];
+      $('sim-intro').classList.add('hidden');
+      $('sim-result').classList.add('hidden');
+      $('sim-play').classList.remove('hidden');
+      simRender();
+    }
+
+    function simShowResult() {
+      const total = sim.results.reduce((s, r) => s + ratingInfo[r].pts, 0);
+      const max = scenarios.length * 2;
+      let label, cls, msg;
+      if (total >= 7) {
+        label = 'Criterio sólido'; cls = 'good';
+        msg = 'Priorizas la verificación, la privacidad y la supervisión humana. Eso es justamente pensar antes de automatizar.';
+      } else if (total >= 4) {
+        label = 'Buen criterio, con puntos por reforzar'; cls = 'partial';
+        msg = 'Identificas buena parte de los riesgos. Repasa los escenarios donde la decisión fue mejorable para afinar tu criterio.';
+      } else {
+        label = 'Conviene repasar'; cls = 'bad';
+        msg = 'Algunas decisiones podrían causar daños a otras personas. Vuelve a intentarlo y lee con calma las consecuencias de cada alternativa.';
+      }
+      const rows = scenarios.map((s, i) => `<div class="summary-row"><span>${ratingInfo[sim.results[i]].icon}</span><div><b>${s.title}</b><br>${s.practice}</div></div>`).join('');
+      $('sim-bar').style.width = '100%';
+      $('sim-play').classList.add('hidden');
+      const res = $('sim-result');
+      res.innerHTML = `
+        <div class="result-head">
+          <div class="result-score">${total}<small> / ${max}</small></div>
+          <span class="result-label ${cls}">${label}</span>
+          <p class="result-msg">${msg}</p>
+        </div>
+        <div class="cat-result"><div class="cat-result-top"><span>Resumen y prácticas recomendadas</span></div>${rows}</div>
+        <div class="tool-actions" style="justify-content:center;">
+          <button class="btn btn-secondary" id="sim-restart">↺ Repetir el simulador</button>
+          <a class="btn btn-primary" href="#etica">Seguir explorando →</a>
+        </div>`;
+      res.classList.remove('hidden');
+      $('sim-restart').addEventListener('click', simStart);
+      $('sim-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    $('sim-start').addEventListener('click', simStart);
+    $('sim-next').addEventListener('click', () => {
+      if (sim.i < scenarios.length - 1) { sim.i++; simRender(); }
+      else simShowResult();
+    });
+
+    // ========== CHATBOT ==========
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatWindow = document.getElementById('chat-window');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatSuggestions = document.getElementById('chat-suggestions');
+
+    let isOpen = false;
+
+    function openChat() {
+      isOpen = true;
+      chatWindow.classList.add('open');
+      chatToggle.classList.add('open');
+      chatToggle.textContent = '✕';
+      chatInput.focus();
+    }
+
+    function closeChat() {
+      isOpen = false;
+      chatWindow.classList.remove('open');
+      chatToggle.classList.remove('open');
+      chatToggle.textContent = '💬';
+    }
+
+    function toggleChat() {
+      isOpen ? closeChat() : openChat();
+    }
+
+    chatToggle.addEventListener('click', toggleChat);
+    document.getElementById('nav-chat-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      openChat();
+    });
+    document.getElementById('hero-chat-btn').addEventListener('click', openChat);
+    document.getElementById('conclusion-chat-btn').addEventListener('click', openChat);
+
+    // Base de conocimiento del chatbot
+    const knowledge = [
+      {
+        keys: ['detector', 'cuestionario', 'mi uso', 'evaluar'],
+        reply: 'El **detector de uso responsable** es un cuestionario de 8 preguntas sobre tus hábitos con la IA: verificación de información, protección de datos, transparencia y uso para aprender.\n\nAl final recibes una clasificación orientativa (uso responsable, moderado o riesgoso) y recomendaciones por categoría. Es educativo: no es una certificación. Lo encuentras en la sección “Detector”.'
+      },
+      {
+        keys: ['simulador', 'dilema', 'escenario', 'decisiones eticas'],
+        reply: 'El **simulador de decisiones éticas** te plantea 4 situaciones (selección de personal con sesgo, datos de estudiantes, un video falso viral y un crédito negado por un algoritmo). Eliges una alternativa y recibes las consecuencias y la práctica recomendada. Lo encuentras en la sección “Simulador”.'
+      },
+      {
+        keys: ['sesgo', 'discrimin', 'algoritmo', 'injust'],
+        reply: 'Un sesgo algorítmico ocurre cuando un sistema de IA produce resultados injustos porque los datos con los que aprendió (o su diseño) reflejan prejuicios.\n\nEjemplo: una IA de selección de personal que rechaza más a un grupo determinado. Para reducirlos: auditar los sistemas, usar datos representativos, explicar las decisiones y mantener supervisión humana.'
+      },
+      {
+        keys: ['privacidad', 'datos personales', 'proteger mis datos', 'informacion personal'],
+        reply: 'Sobre privacidad con IA:\n\n🔒 Evita compartir documentos de identidad, datos de salud, claves o información de terceros\n🔒 Anonimiza lo que compartas\n🔒 Revisa la política de privacidad y la configuración\n🔒 Usa herramientas autorizadas cuando se trata de datos sensibles\n\nLo que escribes puede almacenarse o reutilizarse.'
+      },
+      {
+        keys: ['desinformacion', 'deepfake', 'fake', 'verificar', 'alucin', 'noticias falsas', 'falso'],
+        reply: 'La IA puede generar textos, imágenes y videos falsos muy convincentes, y también “alucinar” datos o fuentes inexistentes.\n\nPara protegerte:\n\n✔️ Contrasta lo importante con fuentes confiables\n✔️ Comprueba que las referencias existan\n✔️ Busca el origen de lo viral antes de compartirlo\n✔️ Desconfía de lo que provoca reacciones muy fuertes'
+      },
+      {
+        keys: ['ocde', 'oecd', 'nist', 'antecedente', 'fuentes', 'referente'],
+        reply: 'Este proyecto se apoya en tres referentes:\n\n🌐 UNESCO (2021): Recomendación sobre la Ética de la IA\n🏛️ OCDE (2024): Principios sobre IA confiable\n🧪 NIST (2023): Marco de Gestión de Riesgos de IA\n\nPuedes ver las fuentes completas en la sección “Antecedentes”.'
+      },
+      {
+        keys: ['pensar antes', 'proyecto', 'objetivo', 'ingenieria de sistemas', 'para que sirve esta pagina'],
+        reply: '“Pensar antes de Automatizar” es una página educativa que busca formar usuarios conscientes, críticos y responsables frente a la IA.\n\nIncluye contenido informativo, un detector de uso responsable y un simulador de decisiones éticas. Se desarrolla con HTML, CSS y JavaScript y une la programación con la reflexión sobre sus consecuencias sociales.'
+      },
+      {
+        keys: ['qué es', 'que es', 'definir', 'definición', 'significa', 'inteligencia artificial'],
+        reply: 'La inteligencia artificial (IA) es un conjunto de tecnologías que permiten a los sistemas informáticos realizar tareas que normalmente asociamos con la inteligencia humana: aprender de datos, reconocer patrones, entender lenguaje, generar contenido y apoyar o tomar decisiones.\n\nNo es magia: se basa en algoritmos, datos y poder de cómputo.'
+      },
+      {
+        keys: ['ejemplo', 'ejemplos', 'cotidiano', 'día a día', 'donde se usa', 'aplicaciones'],
+        reply: 'La IA ya está en tu día a día:\n\n• Asistentes virtuales (Siri, Alexa, Google)\n• Recomendaciones de Netflix, YouTube o Spotify\n• Mapas y rutas inteligentes (Google Maps, Waze)\n• Reconocimiento facial en el teléfono\n• ChatGPT y otras herramientas de texto\n• Sistemas de recomendación en compras online'
+      },
+      {
+        keys: ['beneficio', 'ventajas', 'positivo', 'positivo', 'positivo positivo', 'ayuda', 'positivo'],
+        reply: 'Algunos beneficios importantes de la IA:\n\n✅ Automatiza tareas repetitivas\n✅ Analiza grandes cantidades de datos\n✅ Personaliza educación y salud\n✅ Mejora la accesibilidad\n✅ Acelera la investigación científica\n✅ Optimiza recursos (energía, transporte)\n\nUsada bien, puede potenciar las capacidades humanas.'
+      },
+      {
+        keys: ['riesgo', 'peligro', 'problema', 'desventaja', 'malo', 'negativo'],
+        reply: 'Los principales riesgos de la IA son:\n\n⚠️ Desinformación (deepfakes, textos falsos)\n⚠️ Privacidad (uso masivo de datos personales)\n⚠️ Sesgos (puede amplificar prejuicios de los datos)\n⚠️ Dependencia (delegar demasiado el pensamiento)\n⚠️ Desigualdad de acceso\n⚠️ Falta de transparencia (“cajas negras”)\n\nPor eso es clave usarla con ética y supervisión humana.'
+      },
+      {
+        keys: ['empleo', 'trabajo', 'reemplazar', 'desempleo', 'puestos', 'ocupación', 'trabajadores'],
+        reply: '¿La IA reemplazará a los trabajadores?\n\nNo es tan sencillo. La IA:\n\n1️⃣ Automatiza tareas repetitivas\n2️⃣ Transforma empleos (se necesitan nuevas habilidades)\n3️⃣ Crea nuevas profesiones (diseño, supervisión, ética de IA)\n4️⃣ Aumenta la productividad humana\n\nEl impacto depende de las tareas, las habilidades digitales y de cómo se utilice la tecnología. No es “más IA = menos empleo” de forma automática.'
+      },
+      {
+        keys: ['ética', 'ético', 'responsabilidad', 'responsable', 'quién responde', 'culpa'],
+        reply: 'La ética de la IA se centra en:\n\n📖 Educación: entender cómo funciona\n❤️ Ética: respetar dignidad y derechos humanos\n🔍 Transparencia: poder explicar las decisiones\n🛡️ Supervisión humana: el control final debe ser de personas\n\nSi una IA toma una decisión equivocada (por ejemplo al seleccionar candidatos), la responsabilidad sigue siendo humana: de quien la diseñó, la entrenó y la usa.'
+      },
+      {
+        keys: ['educación', 'estudiar', 'aprender', 'escuela', 'universidad', 'estudiante'],
+        reply: 'En educación, la IA puede:\n\n✅ Explicar conceptos difíciles\n✅ Generar ejemplos y ejercicios\n✅ Adaptarse al nivel del estudiante\n✅ Apoyar investigaciones\n\nPero también tiene riesgos:\n\n⚠️ Facilitar el plagio\n⚠️ Generar información incorrecta\n⚠️ Crear dependencia\n⚠️ Reducir el esfuerzo de aprendizaje si se usa mal\n\n“El problema no es usar IA para aprender. El problema es dejar que la IA aprenda por nosotros.”'
+      },
+      {
+        keys: ['salud', 'médico', 'medicina', 'diagnóstico', 'hospital'],
+        reply: 'En salud, la IA ya ayuda a:\n\n• Analizar imágenes médicas (radiografías, resonancias)\n• Apoyar diagnósticos\n• Descubrir nuevos fármacos\n• Gestionar información clínica\n\nSiempre debe usarse como apoyo a profesionales de la salud, no como reemplazo total, por las consecuencias de un error.'
+      },
+      {
+        keys: ['unesco', 'derechos', 'humanos', 'dignidad', 'inclusión'],
+        reply: 'La UNESCO propone un enfoque de la IA centrado en:\n\n• Derechos humanos\n• Dignidad\n• Inclusión\n• Transparencia\n• Sostenibilidad\n• Supervisión humana\n\nLa idea es que la IA esté al servicio de las personas, no al revés.'
+      },
+      {
+        keys: ['sociedad', 'futuro', 'cambiar', 'transformar', 'mejor'],
+        reply: 'La IA está transformando la sociedad en educación, trabajo, salud, entretenimiento y más.\n\nNo es buena ni mala por sí misma. Lo importante es:\n\n• Cómo la usamos\n• Para qué la usamos\n• Bajo qué principios éticos\n\nLa responsabilidad sigue siendo humana. Podemos construir una sociedad donde la IA potencie a las personas, si ponemos educación, ética, tecnología y responsabilidad juntas.'
+      },
+      {
+        keys: ['hola', 'buenas', 'hey', 'saludos', 'qué tal'],
+        reply: '¡Hola! 😊 Estoy aquí para hablar sobre inteligencia artificial y su impacto en la sociedad. ¿Qué te gustaría saber?'
+      },
+      {
+        keys: ['gracias', 'thank'],
+        reply: '¡De nada! Si tienes más preguntas sobre IA y sociedad, aquí estoy. 🤖'
+      },
+      {
+        keys: ['quién eres', 'quien eres', 'tu nombre', 'asistente'],
+        reply: 'Soy el asistente de IA de esta página sobre Inteligencia Artificial y Sociedad. Estoy entrenado para responder preguntas sobre el tema: definición, beneficios, riesgos, empleo, ética y más. ¡Pregúntame lo que quieras!'
+      }
+    ];
+
+    const defaultReply = 'Interesante pregunta. Puedo hablarte sobre:\n\n• Qué es la IA\n• Beneficios y riesgos\n• Impacto en el empleo\n• Ética y responsabilidad\n• IA en educación y salud\n\n¿Sobre cuál de estos temas quieres saber más?';
+
+    function getReply(text) {
+      const lower = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      for (const item of knowledge) {
+        if (item.keys.some(k => lower.includes(k.normalize('NFD').replace(/[\u0300-\u036f]/g, '')))) {
+          return item.reply;
+        }
+      }
+      return defaultReply;
+    }
+
+    function addMessage(text, type) {
+      const div = document.createElement('div');
+      div.className = `msg ${type}`;
+      const safe = String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      div.innerHTML = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'msg bot typing';
+      div.id = 'typing';
+      div.innerHTML = '<span></span><span></span><span></span>';
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTyping() {
+      const t = document.getElementById('typing');
+      if (t) t.remove();
+    }
+
+    // Conexión con Claude a través de server.js (la clave nunca va en este archivo)
+    const CHAT_API_URL = '/api/chat';
+    const chatHistory = [];
+
+    async function askClaude() {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 30000);
+      try {
+        const r = await fetch(CHAT_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: chatHistory }),
+          signal: ctrl.signal
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        if (!data.reply) throw new Error('vacío');
+        return data.reply;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function sendMessage(text) {
+      text = text.trim();
+      if (!text) return;
+
+      addMessage(text, 'user');
+      chatInput.value = '';
+      chatSuggestions.style.display = 'none';
+      chatSend.disabled = true;
+
+      showTyping();
+      chatHistory.push({ role: 'user', content: text });
+
+      askClaude().then((reply) => {
+        hideTyping();
+        chatHistory.push({ role: 'assistant', content: reply });
+        addMessage(reply, 'bot');
+      }).catch(() => {
+        // Sin servidor o sin conexión: respuestas locales de respaldo
+        hideTyping();
+        const reply = getReply(text);
+        chatHistory.push({ role: 'assistant', content: reply });
+        addMessage(reply, 'bot');
+      }).finally(() => {
+        chatSend.disabled = false;
+        chatInput.focus();
+      });
+    }
+
+    chatSend.addEventListener('click', () => sendMessage(chatInput.value));
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage(chatInput.value);
+    });
+
+    // Sugerencias
+    document.querySelectorAll('.suggestion').forEach(s => {
+      s.addEventListener('click', () => {
+        sendMessage(s.textContent);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "pensar-antes-de-automatizar",
+  "version": "1.0.0",
+  "description": "Pagina educativa sobre IA y sociedad con chat conectado a una IA",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
